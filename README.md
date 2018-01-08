@@ -32,3 +32,10 @@ optional arguments:
   --lookup USERNAME [USERNAME ...]
                         lookup username(s)
 ```
+
+
+
+## To Do:
+1. Create functionality to easily change another users' password.
+
+2. Serve command on a web interface via Eel: https://github.com/ChrisKnott/Eel
