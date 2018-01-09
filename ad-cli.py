@@ -48,16 +48,20 @@ def init():
     
     global conn
     conn = ldap3.Connection(server, user="%s" % username, password='%s' % password, authentication=ldap3.NTLM, auto_bind=True) 
+    conn.start_tls()
 
 #def lookup_user(x):
 
 def edit_user(x):
     if args.password:
-        new_pass= getpass.getpass(x + ' new password:')
-        change_user_pass(x, new_pass)
+        new_pass = getpass.getpass(x + ' new password: ')
+        encoded_password = '"{}"'.format(new_pass).encode('utf-8')
+        proper_username = domain + '\\' + x
+        change_user_pass(proper_username, new_pass)
 
 def change_user_pass(x, y):
-    conn.extend.microsoft.modify_password(x, y)
+    conn.extend.microsoft.modify_password(x, "%s" % y)
+    print(conn.result)
 
 def main():
     init()
