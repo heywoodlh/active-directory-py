@@ -4,16 +4,38 @@ import getpass
 import argparse
 import sys
 
-parser = argparse.ArgumentParser(description="Program to interact with Active Directory")
 
-parser.add_argument('--domain', help='Active Directory Domain to work with', metavar='AD.DOMAIN.COM')
-parser.add_argument('--lookup', help='lookup username(s)', nargs='+', metavar='USERNAME')
+## Argparse arguments
 
-args = parser.parse_args()
+## Main parser and arguments:
+
+main_parser = argparse.ArgumentParser()
+
+main_parser.add_argument('--domain', help='Active Directory domain to work with', metavar='AD.DOMAIN.COM')
+main_parser.add_argument('--aduser', help='Active Directory admin user', metavar='USERNAME')
+
+subparsers = main_parser.add_subparsers(help='commands', dest='command')
+
+## Query parser and arguments:
+parser_query = subparsers.add_parser('query', help='query AD domain for information')
+parser_query.add_argument('--username', help='lookup username(s)', nargs='+', metavar='USERNAME(s)')
+
+## Edit parser and arguments:
+parser_edit = subparsers.add_parser('edit', help='edit AD information') 
+parser_edit.add_argument('--username', help='edit user information', metavar='USERNAME')
+parser_edit.add_argument('--password', help='reset user password', action='store_true')
+
+args = main_parser.parse_args()
 
 def init():
-    username = input('Username: ') 
-    password = getpass.getpass('Password: ')
+
+    global username
+    if args.aduser:
+        username = args.aduser
+    else:
+        username = input('Admin username: ') 
+
+    password = getpass.getpass(username + ' password: ')
 
     global domain
     if args.domain:
@@ -21,14 +43,25 @@ def init():
     else:
         domain = input('AD Domain: ')
 
-    server = ldap3.Server(domain, get_info=ldap3.ALL)
+    server = ldap3.Server(domain)
     username = domain + '\\' + username
-
+    
+    global conn
     conn = ldap3.Connection(server, user="%s" % username, password='%s' % password, authentication=ldap3.NTLM, auto_bind=True) 
 
+#def lookup_user(x):
+
+def edit_user(x):
+    if args.password:
+        new_pass= getpass.getpass(x + ' new password:')
+        change_user_pass(x, new_pass)
+
+def change_user_pass(x, y):
+    conn.extend.microsoft.modify_password(x, y)
 
 def main():
     init()
-
+    if main_parser.parse_args(["edit"]):
+        edit_user(args.username)
 
 main()
