@@ -47,17 +47,37 @@ def init():
     username = domain + '\\' + username
     
     global conn
-    conn = ldap3.Connection(server, user="%s" % username, password='%s' % password, authentication=ldap3.NTLM, auto_bind=True) 
-    conn.start_tls()
+    conn = ldap3.Connection(server, user="%s" % username, password='%s' % password, authentication=ldap3.NTLM, auto_bind=True)
+
+    ## Code for getting proper dn for AD domain
+    bases = domain.split('.')
+    bases_total = len(bases)
+    global base_domain
+    base_domain = ''
+    run = 0
+    for base in bases:
+        if run == 0:
+            base_domain = 'dc=' + str(base)
+        elif bases.index(base) == bases_total - 1:
+            base_domain+='dc=' + str(base)
+        else:
+            base_domain+=',dc=' + str(base) + ','
+        run = run + 1
+
 
 #def lookup_user(x):
 
 def edit_user(x):
     if args.password:
+        namesplit = x.split('.')
+        firstname = namesplit[0]
+        lastname = namesplit[1]
         new_pass = getpass.getpass(x + ' new password: ')
-        encoded_password = '"{}"'.format(new_pass).encode('utf-8')
-        proper_username = domain + '\\' + x
-        change_user_pass(proper_username, new_pass)
+        #encoded_password = '"{}"'.format(new_pass).encode('utf-8')
+        OU_User = "CN=%s %s,CN=Domain Users,CN=Users," % (firstname, lastname)
+        proper_username = OU_User + base_domain
+        print(proper_username)
+        change_user_pass(str(proper_username), new_pass)
 
 def change_user_pass(x, y):
     conn.extend.microsoft.modify_password(x, "%s" % y)
