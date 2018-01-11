@@ -21,7 +21,7 @@ parser_query = subparsers.add_parser('query', help='query AD domain for informat
 parser_query.add_argument('--username', help='lookup username(s)', nargs='+', metavar='USERNAME(s)')
 
 ## Edit parser and arguments:
-parser_edit = subparsers.add_parser('edit', help='edit AD information') 
+parser_edit = subparsers.add_parser('edit', help='edit AD information')
 parser_edit.add_argument('--username', help='edit user information', metavar='USERNAME')
 parser_edit.add_argument('--password', help='reset user password', action='store_true')
 
@@ -33,7 +33,7 @@ def init():
     if args.aduser:
         username = args.aduser
     else:
-        username = input('Admin username: ') 
+        username = input('Admin username: ')
 
     password = getpass.getpass(username + ' password: ')
 
@@ -45,7 +45,7 @@ def init():
 
     server = ldap3.Server(domain)
     username = domain + '\\' + username
-    
+
     global conn
     conn = ldap3.Connection(server, user="%s" % username, password='%s' % password, authentication=ldap3.NTLM, auto_bind=True)
 
@@ -65,23 +65,29 @@ def init():
         run = run + 1
 
 
-#def lookup_user(x):
-
 def edit_user(x):
-    if args.password:
-        namesplit = x.split('.')
-        firstname = namesplit[0]
-        lastname = namesplit[1]
+    if args.username and args.password:
+        get_user_dn(x)
         new_pass = getpass.getpass(x + ' new password: ')
-        #encoded_password = '"{}"'.format(new_pass).encode('utf-8')
-        OU_User = "CN=%s %s,CN=Domain Users,CN=Users," % (firstname, lastname)
-        proper_username = OU_User + base_domain
-        print(proper_username)
-        change_user_pass(str(proper_username), new_pass)
+        print(final_dn)
+        change_user_pass(final_dn, new_pass)
+
+def get_user_dn(x):
+    conn.search(base_domain, '(&(objectclass=person)(sAMAccountName=%s))'  % x, attributes=['sn'])
+    results = conn.entries[0]
+    results = str(results)
+    trim1 = results[4:]
+    trim2 = trim1.split('-')[0]
+    trim3 = trim2.rsplit
+    trim4 = dn.replace("', '", " ")
+    global final_dn
+    dn = str(trim3)
+    final_dn = trim4.strip('[]\'')
 
 def change_user_pass(x, y):
     conn.extend.microsoft.modify_password(x, "%s" % y)
     print(conn.result)
+
 
 def main():
     init()
