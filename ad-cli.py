@@ -79,12 +79,8 @@ def get_user_dn(x):
     results = str(results)
     trim1 = results[4:]
     trim2 = trim1.split('-')[0]
-    #trim3 = trim2.rsplit
-    #trim4 = trim3.replace("', '", " ")
     global final_dn
     final_dn = trim2
-    #dn = str(trim3)
-    #final_dn = trim4.strip('[]\'')
 
 def change_user_pass(x, y):
     conn.extend.microsoft.modify_password(x, new_password='%s' % y)
