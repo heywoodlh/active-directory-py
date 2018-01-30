@@ -17,18 +17,18 @@ sudo pip3 install -r requirements.txt
 
 The command is interactive and can be run simply by executing the program:
 
-`./ad-cli.py`
+`./ad_cli.py`
 
 If no arguments are supplied, the program will interactively prompt for base information.
 
 However, each needed piece of information can be supplied via arguments:
 
-`./ad-cli.py --domain AD.NSANPETE.ORG --aduser domain.admin edit --username test.user --password`
+`./ad_cli.py --domain AD.NSANPETE.ORG --aduser domain.admin edit --username test.user --password`
 
 Replacing 'domain.admin' with an AD domain admin's username and 'test.user' with the username that will have its password changed.
 
 ```
-usage: ad-cli.py [-h] [--domain AD.DOMAIN.COM] [--aduser USERNAME] {edit} ...
+usage: ad_cli.py [-h] [--domain AD.DOMAIN.COM] [--aduser USERNAME] {edit} ...
 positional arguments:
   {edit}                commands
     edit                edit AD information
