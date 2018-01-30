@@ -16,10 +16,6 @@ main_parser.add_argument('--aduser', help='Active Directory admin user', metavar
 
 subparsers = main_parser.add_subparsers(help='commands', dest='command')
 
-## Query parser and arguments:
-parser_query = subparsers.add_parser('query', help='query AD domain for information')
-parser_query.add_argument('--username', help='lookup username(s)', nargs='+', metavar='USERNAME(s)')
-
 ## Edit parser and arguments:
 parser_edit = subparsers.add_parser('edit', help='edit AD information')
 parser_edit.add_argument('--username', help='edit user information', metavar='USERNAME')
@@ -85,7 +81,6 @@ def get_user_dn(x):
 def change_user_pass(x, y):
     conn.extend.microsoft.modify_password(x, new_password='%s' % y)
     print(conn.result)
-
 
 def main():
     init()

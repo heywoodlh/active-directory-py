@@ -21,21 +21,25 @@ The command is interactive and can be run simply by executing the program:
 
 If no arguments are supplied, the program will interactively prompt for base information.
 
+However, each needed piece of information can be supplied via arguments:
+
+`./ad-cli.py --domain AD.NSANPETE.ORG --aduser domain.admin edit --username test.user --password`
+
+Replacing 'domain.admin' with an AD domain admin's username and 'test.user' with the username that will have its password changed.
+
 ```
-usage: ad-cli.py [-h] [--domain AD.DOMAIN.COM]
-                 [--lookup USERNAME [USERNAME ...]]
-Program to interact with Active Directory
+usage: ad-cli.py [-h] [--domain AD.DOMAIN.COM] [--aduser USERNAME] {edit} ...
+positional arguments:
+  {edit}                commands
+    edit                edit AD information
 optional arguments:
   -h, --help            show this help message and exit
   --domain AD.DOMAIN.COM
-                        Active Directory Domain to work with
-  --lookup USERNAME [USERNAME ...]
-                        lookup username(s)
+                        Active Directory domain to work with
+  --aduser USERNAME     Active Directory admin user
 ```
 
 
 
 ## To Do:
-1. Create functionality to easily change another users' password.
-
-2. Serve command on a web interface via Eel: https://github.com/ChrisKnott/Eel
+1. Serve command on a web interface via Eel: https://github.com/ChrisKnott/Eel
