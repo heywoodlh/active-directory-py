@@ -48,6 +48,7 @@ def init():
 
     global conn
     conn = ldap3.Connection(server, user="%s" % username, password='%s' % password, authentication=ldap3.NTLM, auto_bind=True)
+    conn.start_tls()
 
     ## Code for getting proper dn for AD domain
     bases = domain.split('.')
@@ -78,14 +79,15 @@ def get_user_dn(x):
     results = str(results)
     trim1 = results[4:]
     trim2 = trim1.split('-')[0]
-    trim3 = trim2.rsplit
-    trim4 = dn.replace("', '", " ")
+    #trim3 = trim2.rsplit
+    #trim4 = trim3.replace("', '", " ")
     global final_dn
-    dn = str(trim3)
-    final_dn = trim4.strip('[]\'')
+    final_dn = trim2
+    #dn = str(trim3)
+    #final_dn = trim4.strip('[]\'')
 
 def change_user_pass(x, y):
-    conn.extend.microsoft.modify_password(x, "%s" % y)
+    conn.extend.microsoft.modify_password(x, new_password='%s' % y)
     print(conn.result)
 
 
